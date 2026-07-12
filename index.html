@@ -471,7 +471,6 @@
       <div id="auth-section">
         <div class="header">
           <div class="logo-container">
-            <!-- Custom Geometric Folded Origami Wings / Link Icon -->
             <svg class="logo-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2L2 12h5l5-5 5 5h5L12 2z" fill="rgba(129, 140, 248, 0.1)"></path>
               <path d="M12 22L2 12h5l5 5 5-5h5L12 22z" fill="rgba(129, 140, 248, 0.1)"></path>
@@ -519,7 +518,6 @@
       <div id="app-section" class="hidden">
         <div class="header">
           <div class="logo-container">
-            <!-- Custom Geometric Folded Origami Wings / Link Icon -->
             <svg class="logo-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 2L2 12h5l5-5 5 5h5L12 2z" fill="rgba(129, 140, 248, 0.1)"></path>
               <path d="M12 22L2 12h5l5 5 5-5h5L12 22z" fill="rgba(129, 140, 248, 0.1)"></path>
@@ -593,7 +591,8 @@
       signInWithPopup,
       GoogleAuthProvider,
       onAuthStateChanged,
-      signOut
+      signOut,
+      sendEmailVerification // Added for Email Verification
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -643,13 +642,20 @@
         db = getDatabase(app);
 
         onAuthStateChanged(auth, (user) => {
+          // If user exists and has a verified email (or logged in with Google which is pre-verified)
           if (user) {
-            userEmailSpan.textContent = user.email;
-            nav.classList.remove('hidden');
-            authSection.classList.add('hidden');
-            appSection.classList.remove('hidden');
-            generateRandomAlias();
-            renderHistory();
+            if (user.emailVerified || user.providerData.some(p => p.providerId === 'google.com')) {
+              userEmailSpan.textContent = user.email;
+              nav.classList.remove('hidden');
+              authSection.classList.add('hidden');
+              appSection.classList.remove('hidden');
+              generateRandomAlias();
+              renderHistory();
+            } else {
+              // If logged in via email/pass but not verified, show reminder & log out
+              alert('Please verify your email address before logging in. A confirmation link has been sent to ' + user.email);
+              signOut(auth);
+            }
           } else {
             nav.classList.add('hidden');
             authSection.classList.remove('hidden');
@@ -709,7 +715,14 @@
         if (authMode === 'login') {
           await signInWithEmailAndPassword(auth, email, password);
         } else if (authMode === 'signup') {
-          await createUserWithEmailAndPassword(auth, email, password);
+          // 1. Create the user
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          // 2. Send the confirmation email
+          await sendEmailVerification(userCredential.user);
+          alert('Registration successful! A confirmation email has been sent to ' + email + '. Please verify your account before logging in.');
+          // 3. Immediately sign out to prevent premature dashboard entry
+          await signOut(auth);
+          setLoginMode();
         } else if (authMode === 'forgot') {
           await sendPasswordResetEmail(auth, email);
           alert('Password reset instructions sent to your email.');
