@@ -3,223 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SnapLink - Professional URL Shortener</title>
+  <title>Origami Link - Fold Large URLs into Beautiful Links</title>
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --background: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --border: #e2e8f0;
-      --success: #10b981;
-      --error: #ef4444;
+      --primary: #818cf8;
+      --primary-hover: #6366f1;
+      --primary-light: rgba(99, 102, 241, 0.1);
+      --background: #090d16;
+      --card-bg: #111827;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #1f2937;
+      --border-focus: #818cf8;
+      --success: #34d399;
+      --success-light: rgba(52, 211, 153, 0.08);
+      --error: #fb7185;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
     }
 
     body {
       background-color: var(--background);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 55%),
+        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 55%);
       color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 40px 20px;
+    }
+
+    /* Layout Structure */
+    .app-wrapper {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
 
     .container {
       width: 100%;
-      max-width: 480px;
       background: var(--card-bg);
       border-radius: 16px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--shadow-lg);
       border: 1px solid var(--border);
-      padding: 32px;
-      transition: all 0.3s ease;
+      padding: 40px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Header styling */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.3));
     }
 
     .header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
 
     .header h1 {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 8px;
+      color: var(--text-main);
+      letter-spacing: -0.025em;
     }
 
     .header p {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-      position: relative;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
       font-size: 15px;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background-color: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background-color: var(--primary-hover);
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      border: 1.5px solid var(--border);
-      color: var(--text-main);
-    }
-
-    .btn-secondary:hover {
-      background-color: #f1f5f9;
-    }
-
-    .google-btn {
-      background-color: #fff;
-      border: 1.5px solid var(--border);
-      color: var(--text-main);
-      margin-bottom: 16px;
-    }
-
-    .google-btn:hover {
-      background-color: #f8fafc;
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      text-align: center;
       color: var(--text-muted);
-      font-size: 12px;
-      margin: 16px 0;
+      margin-top: 6px;
     }
 
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .divider:not(:empty)::before { margin-right: .5em; }
-    .divider:not(:empty)::after { margin-left: .5em; }
-
-    .toggle-link {
-      display: block;
-      text-align: center;
-      font-size: 13px;
-      color: var(--primary);
-      text-decoration: none;
-      margin-top: 16px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    .toggle-link:hover {
-      text-decoration: underline;
-    }
-
-    .alias-group {
-      display: flex;
-      gap: 8px;
-    }
-
-    .status-badge {
-      font-size: 12px;
-      font-weight: 500;
-      margin-top: 4px;
-      display: inline-block;
-    }
-
-    .status-available { color: var(--success); }
-    .status-unavailable { color: var(--error); }
-    .status-checking { color: var(--primary); }
-
-    .hidden { display: none !important; }
-
-    .result-box {
-      margin-top: 24px;
-      background-color: #f0fdf4;
-      border: 1px dashed var(--success);
-      padding: 16px;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .result-link {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--success);
-      text-decoration: none;
-      word-break: break-all;
-    }
-
+    /* Nav Bar */
     .nav {
       width: 100%;
-      max-width: 480px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      padding: 12px 24px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
       font-size: 13px;
     }
 
     .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       color: var(--text-muted);
       font-weight: 500;
     }
@@ -229,74 +121,464 @@
       cursor: pointer;
       text-decoration: none;
       font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .logout-btn:hover {
+      opacity: 0.8;
+    }
+
+    /* Form Fields styling */
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      color: var(--text-main);
+      background-color: #1e293b;
+      transition: all 0.2s ease;
+    }
+
+    input:focus {
+      border-color: var(--border-focus);
+      background-color: #0f172a;
+      box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.15);
+    }
+
+    /* Interactive Alias Grid */
+    .alias-group {
+      display: flex;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #1e293b;
+      overflow: hidden;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .alias-group:focus-within {
+      border-color: var(--border-focus);
+      background-color: #0f172a;
+      box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.15);
+    }
+
+    .domain-badge {
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      background: #0f172a;
+      border-right: 1px solid var(--border);
+      font-weight: 500;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .alias-group input {
+      border: none;
+      background: transparent;
+      padding: 14px 16px;
+    }
+    .alias-group input:focus {
+      box-shadow: none;
+    }
+
+    /* Buttons styling */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #090d16;
+      box-shadow: 0 4px 6px -1px rgba(129, 140, 248, 0.2);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      background-color: #1f2937;
+      color: var(--text-muted);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background-color: #1e293b;
+    }
+
+    .google-btn {
+      background-color: #1e293b;
+      border: 1.5px solid var(--border);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .google-btn:hover {
+      background-color: #334155;
+      transform: translateY(-1px);
+    }
+
+    /* Auth divider & Switch options */
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 24px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .divider:not(:empty)::before { margin-right: 1em; }
+    .divider:not(:empty)::after { margin-left: 1em; }
+
+    .toggle-link {
+      display: block;
+      text-align: center;
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      margin-top: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Visual Feedback Elements */
+    .status-badge {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-available { color: var(--success); }
+    .status-unavailable { color: var(--error); }
+    .status-checking { color: var(--primary); }
+
+    .hidden { display: none !important; }
+
+    /* Modern Results box layout */
+    .result-box {
+      margin-top: 32px;
+      background-color: var(--success-light);
+      border: 1.5px dashed var(--success);
+      padding: 24px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .result-link {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--success);
+      text-decoration: none;
+      word-break: break-all;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .result-link:hover {
+      border-color: var(--success);
+    }
+
+    /* History / Dashboard Table */
+    .history-card {
+      margin-top: 12px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      padding: 32px;
+    }
+
+    .history-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px;
+      background: #1e293b;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .history-url-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .history-short {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--primary);
+      text-decoration: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .history-long {
+      font-size: 12px;
+      color: var(--text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .copy-sm {
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #0f172a;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .copy-sm:hover {
+      background: #1e293b;
+      border-color: var(--text-muted);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 24px;
+      }
+      .domain-badge {
+        font-size: 13px;
+        padding: 14px 10px;
+      }
+      .history-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .copy-sm {
+        align-self: flex-end;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div id="nav" class="nav hidden">
-    <span class="user-info" id="user-email"></span>
-    <span class="logout-btn" id="logout-btn">Sign Out</span>
-  </div>
-
-  <div class="container">
-    <div id="auth-section">
-      <div class="header">
-        <h1>SnapLink</h1>
-        <p id="auth-subtitle">Sign in to start shortening your links</p>
-      </div>
-
-      <button class="btn google-btn" id="google-login">
-        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84c-.21 1.12-.84 2.07-1.79 2.7v2.24h2.9c1.7-1.57 2.69-3.88 2.69-6.57z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.23l-2.9-2.24c-.8.54-1.84.87-3.06.87-2.35 0-4.34-1.58-5.05-3.72H.95v2.3C2.43 15.89 5.5 18 9 18z"/><path fill="#FBBC05" d="M3.95 10.68A5.4 5.4 0 0 1 3.6 9c0-.58.1-1.15.28-1.68V5.02H.95A8.99 8.99 0 0 0 0 9c0 1.45.35 2.82.95 4.02l3-2.34z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.4C13.46.97 11.41 0 9 0 5.5 0 2.43 2.11.95 5.02l3 2.34c.71-2.14 2.7-3.72 5.05-3.72z"/></svg>
-        Sign in with Google
-      </button>
-
-      <div class="divider">or use credentials</div>
-
-      <form id="auth-form">
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="email" placeholder="you@example.com" required>
-        </div>
-        <div class="form-group" id="password-group">
-          <label>Password</label>
-          <input type="password" id="password" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="btn btn-primary" id="submit-auth-btn">Sign In</button>
-      </form>
-
-      <a class="toggle-link" id="toggle-auth-mode">Need an account? Sign Up</a>
-      <a class="toggle-link" id="forgot-password-link">Forgot password?</a>
+  <div class="app-wrapper">
+    <!-- Navbar -->
+    <div id="nav" class="nav hidden">
+      <span class="user-info">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span id="user-email"></span>
+      </span>
+      <span class="logout-btn" id="logout-btn">Sign Out</span>
     </div>
 
-    <div id="app-section" class="hidden">
-      <div class="header">
-        <h1>SnapLink</h1>
-        <p>Shorten and manage your links securely</p>
+    <!-- Main Container (Workspace / Form Card) -->
+    <div class="container">
+      
+      <!-- Authentication Card Interface -->
+      <div id="auth-section">
+        <div class="header">
+          <div class="logo-container">
+            <!-- Custom Geometric Folded Origami Wings / Link Icon -->
+            <svg class="logo-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 12h5l5-5 5 5h5L12 2z" fill="rgba(129, 140, 248, 0.1)"></path>
+              <path d="M12 22L2 12h5l5 5 5-5h5L12 22z" fill="rgba(129, 140, 248, 0.1)"></path>
+              <path d="M2 12l10-3 10 3-10 3-10-3z"></path>
+            </svg>
+            <h1>Origami Link</h1>
+          </div>
+          <p id="auth-subtitle">Sign in to start folding your links</p>
+        </div>
+
+        <button class="btn google-btn" id="google-login">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84c-.21 1.12-.84 2.07-1.79 2.7v2.24h2.9c1.7-1.57 2.69-3.88 2.69-6.57z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.23l-2.9-2.24c-.8.54-1.84.87-3.06.87-2.35 0-4.34-1.58-5.05-3.72H.95v2.3C2.43 15.89 5.5 18 9 18z"/><path fill="#FBBC05" d="M3.95 10.68A5.4 5.4 0 0 1 3.6 9c0-.58.1-1.15.28-1.68V5.02H.95A8.99 8.99 0 0 0 0 9c0 1.45.35 2.82.95 4.02l3-2.34z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.4C13.46.97 11.41 0 9 0 5.5 0 2.43 2.11.95 5.02l3 2.34c.71-2.14 2.7-3.72 5.05-3.72z"/></svg>
+          Continue with Google
+        </button>
+
+        <div class="divider">or use credentials</div>
+
+        <form id="auth-form">
+          <div class="form-group">
+            <label>Email Address</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              </span>
+              <input type="email" id="email" placeholder="name@company.com" required>
+            </div>
+          </div>
+          <div class="form-group" id="password-group">
+            <label>Password</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </span>
+              <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="submit-auth-btn">Sign In</button>
+        </form>
+
+        <a class="toggle-link" id="toggle-auth-mode">Need a professional workspace? Sign Up</a>
+        <a class="toggle-link" id="forgot-password-link">Forgot your password?</a>
       </div>
 
-      <form id="shorten-form">
-        <div class="form-group">
-          <label>Destination URL</label>
-          <input type="url" id="long-url" placeholder="https://example.com/very/long/destination/path" required>
-        </div>
-
-        <div class="form-group">
-          <label>Customize Short Alias</label>
-          <div class="alias-group">
-            <span style="align-self: center; color: var(--text-muted); font-size: 15px;" id="domain-placeholder">/</span>
-            <input type="text" id="custom-alias" placeholder="custom-name" required>
+      <!-- App Workspace UI -->
+      <div id="app-section" class="hidden">
+        <div class="header">
+          <div class="logo-container">
+            <!-- Custom Geometric Folded Origami Wings / Link Icon -->
+            <svg class="logo-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 12h5l5-5 5 5h5L12 2z" fill="rgba(129, 140, 248, 0.1)"></path>
+              <path d="M12 22L2 12h5l5 5 5-5h5L12 22z" fill="rgba(129, 140, 248, 0.1)"></path>
+              <path d="M2 12l10-3 10 3-10 3-10-3z"></path>
+            </svg>
+            <h1>Origami Link</h1>
           </div>
-          <div id="availability-text" class="status-badge"></div>
+          <p>Folding large URLs into short, beautiful links.</p>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="shorten-btn" disabled>Shorten Link</button>
-      </form>
+        <form id="shorten-form">
+          <div class="form-group">
+            <label>Destination URL</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              </span>
+              <input type="url" id="long-url" placeholder="https://domain.com/your-long-tracking-link" required>
+            </div>
+          </div>
 
-      <div class="result-box hidden" id="result-box">
-        <span class="status-badge status-available">Link generated successfully!</span>
-        <a href="#" id="short-link" target="_blank" class="result-link"></a>
-        <button class="btn btn-secondary" id="copy-btn">Copy Link</button>
+          <div class="form-group">
+            <label>Folded Short Path</label>
+            <div class="alias-group">
+              <span class="domain-badge" id="domain-placeholder">/</span>
+              <input type="text" id="custom-alias" placeholder="brand-name" required>
+            </div>
+            <div id="availability-text" class="status-badge"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="shorten-btn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+            Fold Link
+          </button>
+        </form>
+
+        <!-- Result Box display -->
+        <div class="result-box hidden" id="result-box">
+          <span class="status-badge status-available">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Link Folded Successfully!
+          </span>
+          <a href="#" id="short-link" target="_blank" class="result-link"></a>
+          <button class="btn btn-secondary" id="copy-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy to Clipboard
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History panel (Saved in LocalStorage) -->
+    <div id="history-section" class="history-card hidden">
+      <div class="history-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        Recently Folded Links
+      </div>
+      <div id="history-list" class="history-list">
+        <!-- Rendered items go here -->
       </div>
     </div>
   </div>
@@ -347,6 +629,9 @@
     const copyBtn = document.getElementById('copy-btn');
     const domainPlaceholder = document.getElementById('domain-placeholder');
 
+    const historySection = document.getElementById('history-section');
+    const historyList = document.getElementById('history-list');
+
     domainPlaceholder.textContent = window.location.host + '/';
 
     async function initFirebase() {
@@ -364,25 +649,27 @@
             authSection.classList.add('hidden');
             appSection.classList.remove('hidden');
             generateRandomAlias();
+            renderHistory();
           } else {
             nav.classList.add('hidden');
             authSection.classList.remove('hidden');
             appSection.classList.add('hidden');
+            historySection.classList.add('hidden');
           }
         });
       } catch (err) {
         console.error(err);
-        // This will print the actual technical error to your screen
         alert('Failed to initialize configuration: ' + err.message);
       }
     }
 
     initFirebase();
 
+    // UI Auth State Toggle
     toggleAuthModeLink.addEventListener('click', () => {
       if (authMode === 'login' || authMode === 'forgot') {
         authMode = 'signup';
-        authSubtitle.textContent = 'Create your free account today';
+        authSubtitle.textContent = 'Create your free workspace account';
         passwordGroup.classList.remove('hidden');
         passwordInput.required = true;
         submitAuthBtn.textContent = 'Sign Up';
@@ -395,7 +682,7 @@
 
     forgotPasswordLink.addEventListener('click', () => {
       authMode = 'forgot';
-      authSubtitle.textContent = 'Enter your email to recover password';
+      authSubtitle.textContent = 'Enter your email to recover your credentials';
       passwordGroup.classList.add('hidden');
       passwordInput.required = false;
       submitAuthBtn.textContent = 'Send Reset Email';
@@ -405,7 +692,7 @@
 
     function setLoginMode() {
       authMode = 'login';
-      authSubtitle.textContent = 'Sign in to start shortening your links';
+      authSubtitle.textContent = 'Sign in to start folding your links';
       passwordGroup.classList.remove('hidden');
       passwordInput.required = true;
       submitAuthBtn.textContent = 'Sign In';
@@ -446,12 +733,14 @@
       signOut(auth);
     });
 
+    // Random Generation
     function generateRandomAlias() {
       const randId = Math.random().toString(36).substring(2, 8);
       customAliasInput.value = randId;
       checkAliasAvailability(randId);
     }
 
+    // Input Debouncing
     customAliasInput.addEventListener('input', () => {
       const value = customAliasInput.value.trim();
       resultBox.classList.add('hidden');
@@ -496,6 +785,7 @@
       shortenBtn.disabled = !available;
     }
 
+    // Authenticated Direct DB Write
     shortenForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!isAliasAvailable) return;
@@ -520,16 +810,85 @@
         shortLinkAnchor.href = generatedLink;
         shortLinkAnchor.textContent = generatedLink;
         resultBox.classList.remove('hidden');
+
+        // Save entry locally to display in dashboard history
+        saveLinkToHistory(shortId, longUrl);
+
       } catch (err) {
         alert('Failed to save link: ' + err.message);
       }
     });
 
+    // LocalStorage Link Tracker History Logic
+    function saveLinkToHistory(shortId, longUrl) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const historyKey = `history_${user.uid}`;
+      let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+      
+      // Limit list to last 5 recent links
+      history = history.filter(item => item.shortId !== shortId);
+      history.unshift({ shortId, longUrl, createdAt: Date.now() });
+      if (history.length > 5) history.pop();
+
+      localStorage.setItem(historyKey, JSON.stringify(history));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const historyKey = `history_${user.uid}`;
+      const history = JSON.parse(localStorage.getItem(historyKey)) || [];
+
+      if (history.length === 0) {
+        historySection.classList.add('hidden');
+        return;
+      }
+
+      historySection.classList.remove('hidden');
+      historyList.innerHTML = '';
+
+      history.forEach(item => {
+        const fullShortUrl = `${window.location.origin}/${item.shortId}`;
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'history-item';
+        itemDiv.innerHTML = `
+          <div class="history-url-details">
+            <a href="${fullShortUrl}" target="_blank" class="history-short">${window.location.host}/${item.shortId}</a>
+            <span class="history-long">${item.longUrl}</span>
+          </div>
+          <button class="copy-sm" data-copy="${fullShortUrl}">Copy</button>
+        `;
+        historyList.appendChild(itemDiv);
+      });
+
+      // Hook Copy buttons inside history panel
+      const copyButtons = historyList.querySelectorAll('.copy-sm');
+      copyButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const textToCopy = e.target.getAttribute('data-copy');
+          navigator.clipboard.writeText(textToCopy);
+          e.target.textContent = 'Copied!';
+          setTimeout(() => { e.target.textContent = 'Copy'; }, 1500);
+        });
+      });
+    }
+
+    // Top-level Global Copy Link Event
     copyBtn.addEventListener('click', () => {
       navigator.clipboard.writeText(shortLinkAnchor.textContent);
-      copyBtn.textContent = 'Copied!';
+      copyBtn.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Link Copied!
+      `;
       setTimeout(() => {
-        copyBtn.textContent = 'Copy Link';
+        copyBtn.innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copy to Clipboard
+        `;
       }, 2000);
     });
   </script>
