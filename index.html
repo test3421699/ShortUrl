@@ -371,7 +371,9 @@
           }
         });
       } catch (err) {
-        alert('Failed to initialize configuration.');
+        console.error(err);
+        // This will print the actual technical error to your screen
+        alert('Failed to initialize configuration: ' + err.message);
       }
     }
 
