@@ -1,17 +1,15 @@
-import admin from 'firebase-admin';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, get } from "firebase/database";
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    }),
-    databaseURL: process.env.FIREBASE_DATABASE_URL,
-  });
-}
+const firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+};
 
-const db = admin.database();
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -19,14 +17,13 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'ID is required' });
   }
 
-  // Ensure ID only contains alphanumeric characters, dashes, and underscores
   const idRegex = /^[a-zA-Z0-9_-]+$/;
   if (!idRegex.test(id)) {
     return res.status(200).json({ available: false, error: 'Only letters, numbers, -, and _ allowed.' });
   }
 
   try {
-    const snapshot = await db.ref('urls/' + id).once('value');
+    const snapshot = await get(ref(db, 'urls/' + id));
     return res.status(200).json({ available: !snapshot.exists() });
   } catch (error) {
     return res.status(500).json({ error: error.message });
