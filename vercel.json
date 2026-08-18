@@ -1,5 +1,8 @@
 {
   "rewrites": [
-    { "source": "/:id", "destination": "/api/redirect?id=:id" }
+    {
+      "source": "/:id",
+      "destination": "/api/redirect?id=:id"
+    }
   ]
 }

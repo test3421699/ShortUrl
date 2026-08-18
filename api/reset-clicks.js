@@ -3,7 +3,7 @@ import { adminAuth, adminDb } from "./firebase-admin.js";
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
-      error: "Method not allowed"
+      error: "Method not allowed."
     });
   }
   
@@ -19,13 +19,14 @@ export default async function handler(req, res) {
     const idToken = authHeader.substring(7);
     
     const decodedToken = await adminAuth.verifyIdToken(idToken);
+    
     const userId = decodedToken.uid;
     
-    const { longUrl, shortId } = req.body || {};
+    const { shortId } = req.body || {};
     
-    if (!longUrl || !shortId) {
+    if (!shortId) {
       return res.status(400).json({
-        error: "Missing longUrl or shortId."
+        error: "shortId is required."
       });
     }
     
@@ -33,23 +34,7 @@ export default async function handler(req, res) {
     
     if (!idRegex.test(shortId)) {
       return res.status(400).json({
-        error: "Invalid short ID format."
-      });
-    }
-    
-    let parsedUrl;
-    
-    try {
-      parsedUrl = new URL(longUrl);
-    } catch {
-      return res.status(400).json({
-        error: "Invalid destination URL."
-      });
-    }
-    
-    if (!["http:", "https:"].includes(parsedUrl.protocol)) {
-      return res.status(400).json({
-        error: "Only HTTP and HTTPS URLs are allowed."
+        error: "Invalid short ID."
       });
     }
     
@@ -57,18 +42,26 @@ export default async function handler(req, res) {
     
     const snapshot = await urlRef.get();
     
-    if (snapshot.exists()) {
-      return res.status(409).json({
-        error: "This custom link is already taken."
+    if (!snapshot.exists()) {
+      return res.status(404).json({
+        error: "Short link not found."
       });
     }
     
-    await urlRef.set({
-      longUrl: parsedUrl.toString(),
-      userId,
-      createdAt: Date.now(),
-      clicks: 0
-    });
+    const data = snapshot.val();
+    
+    /*
+     * IMPORTANT:
+     * Only the person who created the link
+     * can reset its click count.
+     */
+    if (data.userId !== userId) {
+      return res.status(403).json({
+        error: "You do not own this link."
+      });
+    }
+    
+    await urlRef.child("clicks").set(0);
     
     return res.status(200).json({
       success: true,
@@ -77,7 +70,7 @@ export default async function handler(req, res) {
     });
     
   } catch (error) {
-    console.error("Shorten error:", error);
+    console.error("Reset clicks error:", error);
     
     if (
       error.code === "auth/id-token-expired" ||
@@ -85,12 +78,12 @@ export default async function handler(req, res) {
       error.code === "auth/invalid-id-token"
     ) {
       return res.status(401).json({
-        error: "Your login session has expired. Please sign in again."
+        error: "Your login session has expired."
       });
     }
     
     return res.status(500).json({
-      error: "Failed to create short link."
+      error: "Failed to reset click count."
     });
   }
 }
