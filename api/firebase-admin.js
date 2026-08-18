@@ -1,23 +1,45 @@
 import admin from "firebase-admin";
 
-function getPrivateKey() {
-  const key = process.env.FIREBASE_PRIVATE_KEY;
-  
-  if (!key) {
-    throw new Error("FIREBASE_PRIVATE_KEY is missing.");
-  }
-  
-  return key.replace(/\\n/g, "\n");
+const projectId = process.env.FIREBASE_PROJECT_ID;
+const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+const privateKeyRaw = process.env.FIREBASE_PRIVATE_KEY;
+const databaseURL = process.env.FIREBASE_DATABASE_URL;
+
+if (!projectId) {
+  throw new Error("FIREBASE_PROJECT_ID is missing");
+}
+
+if (!clientEmail) {
+  throw new Error("FIREBASE_CLIENT_EMAIL is missing");
+}
+
+if (!privateKeyRaw) {
+  throw new Error("FIREBASE_PRIVATE_KEY is missing");
+}
+
+if (!databaseURL) {
+  throw new Error("FIREBASE_DATABASE_URL is missing");
+}
+
+const privateKey = privateKeyRaw
+  .replace(/\\n/g, "\n")
+  .replace(/\r\n/g, "\n")
+  .trim();
+
+if (!privateKey.includes("BEGIN PRIVATE KEY")) {
+  throw new Error(
+    "FIREBASE_PRIVATE_KEY does not contain a valid private key"
+  );
 }
 
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: getPrivateKey()
+      projectId,
+      clientEmail,
+      privateKey
     }),
-    databaseURL: process.env.FIREBASE_DATABASE_URL
+    databaseURL
   });
 }
 
