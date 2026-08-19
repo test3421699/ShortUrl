@@ -1960,7 +1960,7 @@ input:focus-visible {
           setLoginMode();
         } else if (authMode === 'forgot') {
           await sendPasswordResetEmail(auth, email);
-          alert('Password reset instructions sent to your email. If you didnot recieve it please check spam menu.);
+          alert('Password reset instructions sent to your email. If you didnot recieve it please check spam menu.');
           setLoginMode();
         }
       } catch (err) {
