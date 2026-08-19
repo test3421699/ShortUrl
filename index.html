@@ -1954,13 +1954,13 @@ input:focus-visible {
           const userCredential = await createUserWithEmailAndPassword(auth, email, password);
           // 2. Send the confirmation email
           await sendEmailVerification(userCredential.user);
-          alert('Registration successful! A confirmation email has been sent to ' + email + '. Please verify your account before logging in.');
+          alert('Registration successful! A confirmation email has been sent to ' + email + '. Please verify your account before logging in. If you didnot recieve the mail check your spam menu.');
           // 3. Immediately sign out to prevent premature dashboard entry
           await signOut(auth);
           setLoginMode();
         } else if (authMode === 'forgot') {
           await sendPasswordResetEmail(auth, email);
-          alert('Password reset instructions sent to your email.');
+          alert('Password reset instructions sent to your email. If you didnot recieve it please check spam menu.);
           setLoginMode();
         }
       } catch (err) {
